@@ -15,6 +15,24 @@ local global_diagnostic_options = {
   severity_sort = false,
 }
 
+local diagnostic_cache
+do
+  local group = api.nvim_create_augroup('DiagnosticBufWipeout', {})
+  diagnostic_cache = setmetatable({}, {
+    __index = function(t, bufnr)
+      assert(bufnr > 0, 'Invalid buffer number')
+      api.nvim_create_autocmd('BufWipeout', {
+        group = group,
+        buffer = bufnr,
+        callback = function()
+          rawset(t, bufnr, nil)
+        end,
+      })
+      t[bufnr] = {}
+      return t[bufnr]
+    end,
+  })
+end
 
 local function get_bufnr(bufnr)
   if not bufnr or bufnr == 0 then
