@@ -98,7 +98,7 @@ function M.setup()
   vim.lsp.handlers["textDocument/publishDiagnostics"] = M.open_float
 end
 
-function get_diagnostic(opts)
+function M.get_diagnostic(opts)
   -- Support old (bufnr, opts) signature
   local bufnr
   if opts == nil or type(opts) == 'number' then
@@ -288,7 +288,7 @@ end
 function M.open_float(opts, ...)
   local message = Docs.get("hover")
 
-  local lines = get_diagnostic(opts)
+  local lines = M.get_diagnostic(opts)
 
   if not message:focus() then
     Format.format(message, lines)
@@ -300,5 +300,6 @@ function M.open_float(opts, ...)
 end
 
 M.open_float = Util.protect(M.open_float)
+M.get_diagnostic = Util.protext(M.get_diagnostic)
 
 return M
