@@ -13,6 +13,7 @@ end
 
 function M.on_hover(_, result)
   if not (result and result.contents) then
+    print("empty hover result")
     return
   end
 
@@ -33,9 +34,12 @@ function M.on_hover(_, result)
     end
   end
 
+  print(hover_contents)
+
   if not message:focus() then
     Format.format(message, hover_contents)
     if message:is_empty() then
+      print("empty message")
       return
     end
     Docs.show(message)
