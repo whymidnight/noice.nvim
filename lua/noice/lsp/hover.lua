@@ -33,11 +33,11 @@ function M.on_hover(_, result)
   local diagnostic = Diag.get_diagnostic(nil)
   if not vim.tbl_isempty(diagnostic) then
     print("diag")
-    tableMerge(Format.format_markdown(diagnostic), {"\n"}, hover_contents)
+    tableMerge(Format.format_markdown(diagnostic), {""}, hover_contents)
   end
 
   print("result contents", vim.tbl_isempty(result.contents))
-  tableMerge({"\n"}, result.contents, hover_contents)
+  tableMerge({""}, result.contents, hover_contents)
   if not message:focus() then
     Format.format(message, hover_contents)
     if message:is_empty() then
