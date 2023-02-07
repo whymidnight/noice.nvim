@@ -8,6 +8,11 @@ local diag = vim.diagnostic
 
 local api, if_nil = vim.api, vim.F.if_nil
 
+local virtual_text_highlight_map = make_highlight_map('VirtualText')
+local underline_highlight_map = make_highlight_map('Underline')
+local floating_highlight_map = make_highlight_map('Floating')
+local sign_highlight_map = make_highlight_map('Sign')
+
 local global_diagnostic_options = {
   signs = true,
   underline = true,
@@ -264,7 +269,7 @@ function M.open_float(opts, ...)
     opts.focus_id = scope
   end
   local message = Docs.get("hover")
-  Format.format(message, "asdf")
+  Format.format(message, lines)
   Docs.show(message)
 
   if not message:focus() then
