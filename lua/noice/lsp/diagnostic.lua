@@ -8,18 +8,11 @@ local diag = vim.diagnostic
 
 local api, if_nil = vim.api, vim.F.if_nil
 
-local severity = {
-  ERROR = 1,
-  WARN = 2,
-  INFO = 3,
-  HINT = 4,
-}
-
 local diagnostic_severities = {
-  [severity.ERROR] = { ctermfg = 1, guifg = 'Red' },
-  [severity.WARN] = { ctermfg = 3, guifg = 'Orange' },
-  [severity.INFO] = { ctermfg = 4, guifg = 'LightBlue' },
-  [severity.HINT] = { ctermfg = 7, guifg = 'LightGrey' },
+  [diag.severity.ERROR] = { ctermfg = 1, guifg = 'Red' },
+  [diag.severity.WARN] = { ctermfg = 3, guifg = 'Orange' },
+  [diag.severity.INFO] = { ctermfg = 4, guifg = 'LightBlue' },
+  [diag.severity.HINT] = { ctermfg = 7, guifg = 'LightGrey' },
 }
 
 local function make_highlight_map(base_name)
@@ -149,14 +142,12 @@ function M.open_float(opts, ...)
     error("Invalid value for option 'scope'")
   end
 
-  print(bufnr, scope, lnum)
   local diagnostics = diag.get(bufnr, {
     lnum = lnum,
   })
 
   if scope == 'line' then
     diagnostics = vim.tbl_filter(function(d)
-      print(bufnr, scope, lnum, d.lnum)
       return d.lnum == lnum
     end, diagnostics)
   elseif scope == 'cursor' then
@@ -169,7 +160,6 @@ function M.open_float(opts, ...)
     end, diagnostics)
   end
 
-  print(diagnostics, vim.tbl_isempty(diagnostics))
   if vim.tbl_isempty(diagnostics) then
     return
   end
@@ -288,18 +278,17 @@ function M.open_float(opts, ...)
     end
   end
 
-  -- Used by open_floating_preview to allow the float to be focused
   if not opts.focus_id then
     opts.focus_id = scope
   end
   local message = Docs.get("hover")
-  Format.format(message, lines)
-  Docs.show(message)
 
   if not message:focus() then
+    Format.format(message, lines)
     if message:is_empty() then
       return
     end
+    Docs.show(message)
   end
 end
 
