@@ -8,6 +8,30 @@ local diag = vim.diagnostic
 
 local api, if_nil = vim.api, vim.F.if_nil
 
+local severity = {
+  ERROR = 1,
+  WARN = 2,
+  INFO = 3,
+  HINT = 4,
+}
+
+local diagnostic_severities = {
+  [severity.ERROR] = { ctermfg = 1, guifg = 'Red' },
+  [severity.WARN] = { ctermfg = 3, guifg = 'Orange' },
+  [severity.INFO] = { ctermfg = 4, guifg = 'LightBlue' },
+  [severity.HINT] = { ctermfg = 7, guifg = 'LightGrey' },
+}
+
+local function make_highlight_map(base_name)
+  local result = {}
+  for k in pairs(diagnostic_severities) do
+    local name = severity[k]
+    name = name:sub(1, 1) .. name:sub(2):lower()
+    result[k] = 'Diagnostic' .. base_name .. name
+  end
+
+  return result
+end
 local virtual_text_highlight_map = make_highlight_map('VirtualText')
 local underline_highlight_map = make_highlight_map('Underline')
 local floating_highlight_map = make_highlight_map('Floating')
