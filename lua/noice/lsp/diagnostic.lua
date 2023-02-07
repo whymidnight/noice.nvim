@@ -211,12 +211,12 @@ function M.open_float(opts, ...)
     error("Invalid value for option 'scope'")
   end
 
-  print(bufnr, scope)
+  print(bufnr, scope, lnum)
   local diagnostics = get_diagnostics(bufnr, opts, true)
-  print(diagnostics)
 
   if scope == 'line' then
     diagnostics = vim.tbl_filter(function(d)
+      print(bufnr, scope, lnum, d.lnum)
       return d.lnum == lnum
     end, diagnostics)
   elseif scope == 'cursor' then
@@ -229,6 +229,7 @@ function M.open_float(opts, ...)
     end, diagnostics)
   end
 
+  print(diagnostics, vim.tbl_isempty(diagnostics))
   if vim.tbl_isempty(diagnostics) then
     return
   end
