@@ -211,8 +211,9 @@ function M.open_float(opts, ...)
     error("Invalid value for option 'scope'")
   end
 
-  print(bufnr)
+  print(bufnr, scope)
   local diagnostics = get_diagnostics(bufnr, opts, true)
+  print(diagnostics)
 
   if scope == 'line' then
     diagnostics = vim.tbl_filter(function(d)
