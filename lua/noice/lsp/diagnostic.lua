@@ -100,6 +100,25 @@ local function get_resolved_options(opts, namespace, bufnr)
   return resolved
 end
 
+local function resolve_optional_value(option, value, namespace, bufnr)
+  if not value then
+    return false
+  elseif value == true then
+    return enabled_value(option, namespace)
+  elseif type(value) == 'function' then
+    local val = value(namespace, bufnr)
+    if val == true then
+      return enabled_value(option, namespace)
+    else
+      return val
+    end
+  elseif type(value) == 'table' then
+    return value
+  else
+    error('Unexpected option type: ' .. vim.inspect(value))
+  end
+end
+
 local M = {}
 
 local function get_bufnr(bufnr)
