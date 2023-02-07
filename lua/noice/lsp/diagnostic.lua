@@ -17,7 +17,15 @@ local global_diagnostic_options = {
   severity_sort = true,
 }
 
+local function get_bufnr(bufnr)
+  if not bufnr or bufnr == 0 then
+    return api.nvim_get_current_buf()
+  end
+  return bufnr
+end
+
 local M = {}
+
 
 function M.setup()
   vim.lsp.handlers["textDocument/publishDiagnostics"] = M.open_float
@@ -74,6 +82,7 @@ function M.open_float(opts, ...)
 
   if scope == 'line' then
     diagnostics = vim.tbl_filter(function(d)
+      print(bufnr, scope, lnum, d.lnum)
       return d.lnum == lnum
     end, diagnostics)
   elseif scope == 'cursor' then
