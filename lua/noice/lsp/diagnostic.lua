@@ -103,7 +103,7 @@ function M.get_diagnostic(opts)
   local bufnr
   if opts == nil or type(opts) == 'number' then
     bufnr = opts
-    opts = ...
+    opts = nil
   else
     vim.validate({
       opts = { opts, 't', true },
