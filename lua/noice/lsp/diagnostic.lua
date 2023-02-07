@@ -211,6 +211,7 @@ function M.open_float(opts, ...)
     error("Invalid value for option 'scope'")
   end
 
+  print(bufnr)
   local diagnostics = get_diagnostics(bufnr, opts, true)
 
   if scope == 'line' then
