@@ -16,6 +16,12 @@ local global_diagnostic_options = {
 }
 
 
+local function get_bufnr(bufnr)
+  if not bufnr or bufnr == 0 then
+    return api.nvim_get_current_buf()
+  end
+  return bufnr
+end
 
 local function enabled_value(option, namespace)
   local ns = namespace and M.get_namespace(namespace) or {}
@@ -138,12 +144,6 @@ end
 
 local M = {}
 
-local function get_bufnr(bufnr)
-  if not bufnr or bufnr == 0 then
-    return api.nvim_get_current_buf()
-  end
-  return bufnr
-end
 
 function M.setup()
   vim.lsp.handlers["textDocument/publishDiagnostics"] = M.open_float
