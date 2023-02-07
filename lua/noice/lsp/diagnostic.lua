@@ -25,7 +25,7 @@ local diagnostic_severities = {
 local function make_highlight_map(base_name)
   local result = {}
   for k in pairs(diagnostic_severities) do
-    local name = severity[k]
+    local name = diag.severity[k]
     name = name:sub(1, 1) .. name:sub(2):lower()
     result[k] = 'Diagnostic' .. base_name .. name
   end
