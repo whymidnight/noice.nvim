@@ -12,7 +12,6 @@ end
 
 function M.on_hover(_, result)
   if not (result and result.contents) then
-    vim.notify("No information available")
     return
   end
 
@@ -21,7 +20,6 @@ function M.on_hover(_, result)
   if not message:focus() then
     Format.format(message, result.contents)
     if message:is_empty() then
-      vim.notify("No information available")
       return
     end
     Docs.show(message)
