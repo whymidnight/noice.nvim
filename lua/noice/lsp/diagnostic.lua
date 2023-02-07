@@ -350,13 +350,13 @@ function M.open_float(opts, ...)
     opts.focus_id = scope
   end
   local message = Docs.get("hover")
+  Format.format(message, lines)
+  Docs.show(message)
 
   if not message:focus() then
-    Format.format(message, lines)
     if message:is_empty() then
       return
     end
-    Docs.show(message)
   end
 end
 
