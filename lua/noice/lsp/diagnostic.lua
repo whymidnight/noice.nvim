@@ -6,6 +6,63 @@ local Docs = require("noice.lsp.docs")
 
 local api, if_nil = vim.api, vim.F.if_nil
 
+local global_diagnostic_options = {
+  signs = true,
+  underline = true,
+  virtual_text = true,
+  float = true,
+  update_in_insert = false,
+  severity_sort = false,
+}
+
+
+
+local function enabled_value(option, namespace)
+  local ns = namespace and M.get_namespace(namespace) or {}
+  if ns.opts and type(ns.opts[option]) == 'table' then
+    return ns.opts[option]
+  end
+
+  if type(global_diagnostic_options[option]) == 'table' then
+    return global_diagnostic_options[option]
+  end
+
+  return {}
+end
+
+local function resolve_optional_value(option, value, namespace, bufnr)
+  if not value then
+    return false
+  elseif value == true then
+    return enabled_value(option, namespace)
+  elseif type(value) == 'function' then
+    local val = value(namespace, bufnr)
+    if val == true then
+      return enabled_value(option, namespace)
+    else
+      return val
+    end
+  elseif type(value) == 'table' then
+    return value
+  else
+    error('Unexpected option type: ' .. vim.inspect(value))
+  end
+end
+
+local function get_resolved_options(opts, namespace, bufnr)
+  local ns = namespace and M.get_namespace(namespace) or {}
+  -- Do not use tbl_deep_extend so that an empty table can be used to reset to default values
+  local resolved = vim.tbl_extend('keep', opts or {}, ns.opts or {}, global_diagnostic_options)
+  for k in pairs(global_diagnostic_options) do
+    if resolved[k] ~= nil then
+      resolved[k] = resolve_optional_value(k, resolved[k], namespace, bufnr)
+    end
+  end
+  return resolved
+end
+
+
+
 local function get_diagnostics(bufnr, opts, clamp)
   opts = opts or {}
 
@@ -78,46 +135,6 @@ local function get_diagnostics(bufnr, opts, clamp)
   return diagnostics
 end
 
-
-local global_diagnostic_options = {
-  signs = true,
-  underline = true,
-  virtual_text = true,
-  float = true,
-  update_in_insert = false,
-  severity_sort = false,
-}
-
-local function get_resolved_options(opts, namespace, bufnr)
-  local ns = namespace and M.get_namespace(namespace) or {}
-  -- Do not use tbl_deep_extend so that an empty table can be used to reset to default values
-  local resolved = vim.tbl_extend('keep', opts or {}, ns.opts or {}, global_diagnostic_options)
-  for k in pairs(global_diagnostic_options) do
-    if resolved[k] ~= nil then
-      resolved[k] = resolve_optional_value(k, resolved[k], namespace, bufnr)
-    end
-  end
-  return resolved
-end
-
-local function resolve_optional_value(option, value, namespace, bufnr)
-  if not value then
-    return false
-  elseif value == true then
-    return enabled_value(option, namespace)
-  elseif type(value) == 'function' then
-    local val = value(namespace, bufnr)
-    if val == true then
-      return enabled_value(option, namespace)
-    else
-      return val
-    end
-  elseif type(value) == 'table' then
-    return value
-  else
-    error('Unexpected option type: ' .. vim.inspect(value))
-  end
-end
 
 local M = {}
 
