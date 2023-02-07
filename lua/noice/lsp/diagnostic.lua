@@ -15,16 +15,9 @@ local severity = {
   HINT = 4,
 }
 
-local diagnostic_severities = {
-  [severity.ERROR] = { ctermfg = 1, guifg = 'Red' },
-  [severity.WARN] = { ctermfg = 3, guifg = 'Orange' },
-  [severity.INFO] = { ctermfg = 4, guifg = 'LightBlue' },
-  [severity.HINT] = { ctermfg = 7, guifg = 'LightGrey' },
-}
-
 local function make_highlight_map(base_name)
   local result = {}
-  for k in pairs(diagnostic_severities) do
+  for k in pairs(diag.diagnostic_severities) do
     local name = severity[k]
     name = name:sub(1, 1) .. name:sub(2):lower()
     result[k] = 'Diagnostic' .. base_name .. name
