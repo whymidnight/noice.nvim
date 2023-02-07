@@ -5,15 +5,6 @@ local Util = require("noice.util")
 local Docs = require("noice.lsp.docs")
 local Diag = require("noice.lsp.diagnostic")
 
-local function tableMerge(table1, table2, result)
-	for _, v in ipairs(table1) do
-		table.insert(result, v)
-	end
-	for _, v in ipairs(table2) do
-		table.insert(result, v)
-	end
-end
-
 local M = {}
 
 function M.setup()
@@ -25,15 +16,21 @@ function M.on_hover(_, result)
     return
   end
 
-  local hover_contents = {}
+  local hover_contents
 
   local message = Docs.get("hover")
 
   local diagnostic = Diag.get_diagnostic(nil)
   if not vim.tbl_isempty(diagnostic) then
-    tableMerge(diagnostic, {}, hover_contents)
+    hover_contents = diagnostic or {}
+    for _, v in ipairs(result.contents) do
+      table.insert(hover_contents, v)
+    end
   else
-    tableMerge(diagnostic, result.contents, hover_contents)
+    hover_contents = {}
+    for _, v in ipairs(result.contents) do
+      table.insert(hover_contents, v)
+    end
   end
 
   if not message:focus() then
