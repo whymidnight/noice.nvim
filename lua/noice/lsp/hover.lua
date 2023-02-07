@@ -14,7 +14,6 @@ end
 
 function M.on_hover(_, result)
   if not (result and result.contents) then
-    print("no result and contents")
     return
   end
 
@@ -25,13 +24,11 @@ function M.on_hover(_, result)
   local diagnostic = Diag.get_diagnostic(nil)
   local diagnostic_contents = {}
   if not vim.tbl_isempty(diagnostic) then
-    print("diag")
     diagnostic_contents = Format.format_markdown(diagnostic)
   end
 
   local result_contents = {}
   if result.contents then
-    print("result contents", result.contents)
     result_contents = Format.format_markdown(result.contents)
   end
 
@@ -41,7 +38,6 @@ function M.on_hover(_, result)
   if not message:focus() then
     Format.format(message, hover_contents)
     if message:is_empty() then
-      print("empty message")
       return
     end
     Docs.show(message)
