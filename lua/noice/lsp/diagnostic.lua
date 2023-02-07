@@ -17,6 +17,39 @@ local global_diagnostic_options = {
   severity_sort = true,
 }
 
+local function enabled_value(option, namespace)
+  local ns = namespace and M.get_namespace(namespace) or {}
+  if ns.opts and type(ns.opts[option]) == 'table' then
+    return ns.opts[option]
+  end
+
+  if type(global_diagnostic_options[option]) == 'table' then
+    return global_diagnostic_options[option]
+  end
+
+  return {}
+end
+
+
+local function resolve_optional_value(option, value, namespace, bufnr)
+  if not value then
+    return false
+  elseif value == true then
+    return enabled_value(option, namespace)
+  elseif type(value) == 'function' then
+    local val = value(namespace, bufnr)
+    if val == true then
+      return enabled_value(option, namespace)
+    else
+      return val
+    end
+  elseif type(value) == 'table' then
+    return value
+  else
+    error('Unexpected option type: ' .. vim.inspect(value))
+  end
+end
+
 local function get_bufnr(bufnr)
   if not bufnr or bufnr == 0 then
     return api.nvim_get_current_buf()
