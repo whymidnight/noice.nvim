@@ -24,6 +24,18 @@ local function get_bufnr(bufnr)
   return bufnr
 end
 
+local function get_resolved_options(opts, namespace, bufnr)
+  local ns = namespace and M.get_namespace(namespace) or {}
+  -- Do not use tbl_deep_extend so that an empty table can be used to reset to default values
+  local resolved = vim.tbl_extend('keep', opts or {}, ns.opts or {}, global_diagnostic_options)
+  for k in pairs(global_diagnostic_options) do
+    if resolved[k] ~= nil then
+      resolved[k] = resolve_optional_value(k, resolved[k], namespace, bufnr)
+    end
+  end
+  return resolved
+end
+
 local M = {}
 
 
