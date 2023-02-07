@@ -300,6 +300,6 @@ function M.open_float(opts, ...)
 end
 
 M.open_float = Util.protect(M.open_float)
-M.get_diagnostic = Util.protext(M.get_diagnostic)
+M.get_diagnostic = Util.protect(M.get_diagnostic)
 
 return M
