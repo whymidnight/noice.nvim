@@ -3,7 +3,7 @@ local require = require("noice.util.lazy")
 local Format = require("noice.lsp.format")
 local Util = require("noice.util")
 local Docs = require("noice.lsp.docs")
-local Diag = noice.lsp.diag
+local Diag = require("noice.lsp.diag")
 
 
 local M = {}
