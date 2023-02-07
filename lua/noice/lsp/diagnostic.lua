@@ -98,7 +98,7 @@ function M.setup()
   vim.lsp.handlers["textDocument/publishDiagnostics"] = M.open_float
 end
 
-function M.open_float(opts, ...)
+function get_diagnostic(opts)
   -- Support old (bufnr, opts) signature
   local bufnr
   if opts == nil or type(opts) == 'number' then
@@ -161,7 +161,7 @@ function M.open_float(opts, ...)
   end
 
   if vim.tbl_isempty(diagnostics) then
-    return
+    return {}
   end
 
   local severity_sort = vim.F.if_nil(opts.severity_sort, global_diagnostic_options.severity_sort)
@@ -281,7 +281,14 @@ function M.open_float(opts, ...)
   if not opts.focus_id then
     opts.focus_id = scope
   end
+
+  return lines
+end
+
+function M.open_float(opts, ...)
   local message = Docs.get("hover")
+
+  local lines = get_diagnostic(opts)
 
   if not message:focus() then
     Format.format(message, lines)
