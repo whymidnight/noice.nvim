@@ -5,14 +5,6 @@ local Util = require("noice.util")
 local Docs = require("noice.lsp.docs")
 local Diag = noice.lsp.diag
 
-local function tableMerge(table1, table2, result)
-	for _, v in ipairs(table1) do
-		table.insert(result, v)
-	end
-	for _, v in ipairs(table2) do
-		table.insert(result, v)
-	end
-end
 
 local M = {}
 
@@ -21,6 +13,15 @@ function M.setup()
 end
 
 function M.on_hover(_, result)
+  local function tableMerge(table1, table2, result)
+    for _, v in ipairs(table1) do
+      table.insert(result, v)
+    end
+    for _, v in ipairs(table2) do
+      table.insert(result, v)
+    end
+  end
+
   if not (result and result.contents) then
     print("no result and contents")
     return
