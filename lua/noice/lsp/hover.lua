@@ -13,15 +13,6 @@ function M.setup()
 end
 
 function M.on_hover(_, result)
-  local function tableMerge(table1, table2, result)
-    for _, v in ipairs(table1) do
-      table.insert(result, v)
-    end
-    for _, v in ipairs(table2) do
-      table.insert(result, v)
-    end
-  end
-
   if not (result and result.contents) then
     print("no result and contents")
     return
@@ -34,11 +25,15 @@ function M.on_hover(_, result)
   local diagnostic = Diag.get_diagnostic(nil)
   if not vim.tbl_isempty(diagnostic) then
     print("diag")
-    tableMerge(Format.format_markdown(diagnostic), {""}, hover_contents)
+    for _, dia in ipairs(diagnostic) do
+      table.insert(hover_contents, dia)
+    end
   end
 
   print("result contents", vim.tbl_isempty(result.contents))
-  tableMerge({""}, result.contents, hover_contents)
+  for _, res in ipairs(result.contents) do
+    table.insert(hover_contents, res)
+  end
   if not message:focus() then
     Format.format(message, hover_contents)
     if message:is_empty() then
